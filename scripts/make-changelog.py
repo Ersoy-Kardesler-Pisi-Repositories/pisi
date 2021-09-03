@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 import piksemel
 
@@ -12,7 +12,7 @@ authors = {}
 
 def get_author_name_mail(author):
     if not authors:
-        accounts = urllib2.urlopen(accounts_url)
+        accounts = urllib.request.urlopen(accounts_url)
         for line in accounts:
             if line.startswith("#"):
                 continue

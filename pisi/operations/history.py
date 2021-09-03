@@ -89,7 +89,7 @@ def fetch_remote_file(package, errors):
     if not os.path.exists(filepath):
         try:
             pisi.fetcher.fetch_url(uri, dest, ctx.ui.Progress)
-        except pisi.fetcher.FetchError, e:
+        except pisi.fetcher.FetchError as e:
             errors.append(package)
             ctx.ui.info(pisi.util.colorize(_("%s could not be found") % (package), "red"))
             return False

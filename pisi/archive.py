@@ -325,7 +325,7 @@ class ArchiveTar(ArchiveBase):
                         # try as up to this time
                         try:
                             os.renames(old_path, new_path)
-                        except OSError, e:
+                        except OSError as e:
                             # something gone wrong? [Errno 18] Invalid cross-device link?
                             # try in other way
                             if e.errno == errno.EXDEV:
@@ -335,13 +335,13 @@ class ArchiveTar(ArchiveBase):
                                     old_path = "/" + old_path
                                 if not new_path.startswith("/"):
                                     new_path = "/" + new_path
-                                print "Moving:", old_path, " -> ", new_path
+                                print(("Moving:", old_path, " -> ", new_path))
                                 os.system("mv -f %s %s" % (old_path, new_path))
                             else:
                                 raise
                     try:
                         os.rmdir(tarinfo.name)
-                    except OSError, e:
+                    except OSError as e:
                         # hmmm, not empty dir? try rename it adding .old extension.
                         if e.errno == errno.ENOTEMPTY:
                             # if directory with dbus/pid file was moved we have to restart dbus
@@ -376,7 +376,7 @@ class ArchiveTar(ArchiveBase):
             try:
                 self.tar.extract(tarinfo)
                 for service in startservices: os.system("service %s start" % service)
-            except OSError, e:
+            except OSError as e:
                 # Handle the case where an upper directory cannot
                 # be created because of a conflict with an existing
                 # regular file or symlink. In this case, remove
@@ -410,7 +410,7 @@ class ArchiveTar(ArchiveBase):
                 # Try to extract again.
                 self.tar.extract(tarinfo)
 
-            except IOError, e:
+            except IOError as e:
                 # Handle the case where new path is file, but old path is directory
                 # due to not possible touch file c in /a/b if directory /a/b/c exists.  
                 if not e.errno == errno.EISDIR:
@@ -603,7 +603,7 @@ class ArchiveZip(ArchiveBase):
             arc_name = arc_name or ""
             self.zip_obj.writestr(arc_name + '/', '')
             attr_obj = self.zip_obj.getinfo(arc_name + '/')
-            attr_obj.external_attr = stat.S_IMODE(os.stat(file_name)[0]) << 16L
+            attr_obj.external_attr = stat.S_IMODE(os.stat(file_name)[0]) << 16
             for f in os.listdir(file_name):
                 self.add_to_archive(os.path.join(file_name, f),
                                     os.path.join(arc_name, f))

@@ -26,11 +26,11 @@ __all__ = [ 'api', 'configfile', 'db']
 class Exception(Exception):
     """Class of exceptions that must be caught and handled within PiSi"""
     def __str__(self):
-        s = u''
+        s = ''
         for x in self.args:
             if s != '':
                 s += '\n'
-            s += unicode(x)
+            s += str(x)
         return s
 
 class Error(Exception):
@@ -43,7 +43,7 @@ import pisi.context as ctx
 
 def init_logging():
     log_dir = os.path.join(ctx.config.dest_dir(), ctx.config.log_dir())
-    if os.access(log_dir, os.W_OK) and not sys.modules.has_key("distutils.core"):
+    if os.access(log_dir, os.W_OK) and "distutils.core" not in sys.modules:
         handler = logging.handlers.RotatingFileHandler('%s/pisi.log' % log_dir)
         formatter = logging.Formatter('%(asctime)-12s: %(levelname)-8s %(message)s')
         handler.setFormatter(formatter)

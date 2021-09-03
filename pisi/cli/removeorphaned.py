@@ -21,14 +21,13 @@ import pisi.context as ctx
 import pisi.api
 import pisi.db
 
-class RemoveOrphaned(command.PackageOp):
+class RemoveOrphaned(command.PackageOp, metaclass=command.autocommand):
     __doc__ = _("""Remove orphaned packages
 
 Usage: remove-orphaned
 
 Remove all orphaned packages from the system.
 """)
-    __metaclass__ = command.autocommand
 
     def __init__(self,args):
         super(RemoveOrphaned, self).__init__(args)

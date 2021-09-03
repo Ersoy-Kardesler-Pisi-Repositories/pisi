@@ -21,7 +21,7 @@ import pisi.cli.build as build
 import pisi.context as ctx
 import pisi.api
 
-class EmergeUp(build.Build):
+class EmergeUp(build.Build, metaclass=command.autocommand):
     __doc__ = _("""Build and install PiSi source packages from repository
 
 Usage: emergeup ...
@@ -31,7 +31,6 @@ downloaded from a repository containing sources.
 
 You can also give the name of a component.
 """)
-    __metaclass__ = command.autocommand
 
     def __init__(self, args):
         super(EmergeUp, self).__init__(args)
