@@ -7,7 +7,7 @@ from pisi.actionsapi import get
 from pisi.actionsapi.shelltools import system
 
 __trans = gettext.translation('pisi', fallback=True)
-_ = __trans.ugettext
+_ = __trans.gettext
 
 
 class ConfigureError(pisi.actionsapi.Error):
