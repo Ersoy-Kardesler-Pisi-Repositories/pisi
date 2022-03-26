@@ -20,6 +20,7 @@
 """
 
 # System
+import builtins
 import locale
 import types
 import formatter
@@ -258,7 +259,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         #setattr(cls, 'xml_variables', [])
 
         # default class tag is class name
-        if 'tag' not in dict:
+        if 'tag' not in dir(dict):
             cls.tag = name
 
         # generate helper routines, for each XML component
@@ -336,7 +337,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         cls.__init__ = initialize
 
         cls.decoders = decoders
-        def decode(self, node, errs, where = str(cls.tag)):
+        def decode(self, node, errs, where = builtins.str(cls.tag)):
             for base in cls.autoxml_bases:
                 base.decode(self, node, errs, where)
             for decode_member in decoders:#self.__class__.decoders:
@@ -356,7 +357,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         cls.encode = encode
 
         cls.errorss = errorss
-        def errors(self, where = str(name)):
+        def errors(self, where = builtins.str(name)):
             errs = []
             for base in cls.autoxml_bases:
                 errs.extend(base.errors(self, where))
@@ -393,9 +394,9 @@ class autoxml(oo.autosuper, oo.autoprop):
             def str(self):
                 strfile = io.StringIO()
                 self.print_text(strfile)
-                str = strfile.getvalue()
+                string_value = strfile.getvalue()
                 strfile.close()
-                return str
+                return string_value
             cls.__str__ = str
 
         if '__eq__' not in dict:
@@ -589,7 +590,7 @@ class autoxml(oo.autosuper, oo.autoprop):
 
     def mixed_case(cls, identifier):
         """helper function to turn token name into mixed case"""
-        if identifier is "":
+        if identifier == "":
             return ""
         else:
             if identifier[0]=='I':
