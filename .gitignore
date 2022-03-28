@@ -3,3 +3,4 @@ po/*.mo
 install.sh
 pisi.egg-info
 *.bak
+*.pyc
