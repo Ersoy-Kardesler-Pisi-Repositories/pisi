@@ -29,14 +29,14 @@ class grep:
     def __init__(self, pat, flags = 0):
         self.fun = re.compile(pat, flags).match
     def __ror__(self, input):
-        return list(filter(self.fun, input))
+        return filter(self.fun, input)
 
 class tr:
     '''apply arbitrary transform to each sequence element'''
     def __init__(self, transform):
         self.tr = transform
     def __ror__(self, input):
-        return list(map(self.tr, input))
+        return map(self.tr, input)
 
 class printto:
     '''print sequence elements one per line'''

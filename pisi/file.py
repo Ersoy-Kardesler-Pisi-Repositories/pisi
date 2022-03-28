@@ -92,7 +92,7 @@ class File:
         compress = File.choose_method(localfile, compress)
         if compress == File.COMPRESSION_TYPE_XZ:
             import lzma
-            open(localfile[:-3], "w").write(lzma.LZMAFile(localfile).read())
+            open(localfile[:-3], "w").write(lzma.LZMAFile(localfile).read().decode("utf-8"))
             localfile = localfile[:-3]
         elif compress == File.COMPRESSION_TYPE_BZ2:
             import bz2
@@ -115,7 +115,7 @@ class File:
 
         if sha1sum:
             sha1filename = File.download(pisi.uri.URI(uri.get_uri() + '.sha1sum'), transfer_dir)
-            sha1f = file(sha1filename)
+            sha1f = open(sha1filename)
             newsha1 = sha1f.read().split("\n")[0]
 
         if uri.is_remote_file() or copylocal:
@@ -202,7 +202,7 @@ class File:
             access = 'r'
         else:
             access = 'w'
-        self.__file__ = file(localfile, access)
+        self.__file__ = open(localfile, access)
         self.localfile = localfile
 
     def local_file(self):
@@ -233,12 +233,12 @@ class File:
 
             if self.sha1sum:
                 sha1 = pisi.util.sha1_file(self.localfile)
-                cs = file(self.localfile + '.sha1sum', 'w')
+                cs = open(self.localfile + '.sha1sum', 'w')
                 cs.write(sha1)
                 cs.close()
                 for compressed_file in compressed_files:
                     sha1 = pisi.util.sha1_file(compressed_file)
-                    cs = file(compressed_file + '.sha1sum', 'w')
+                    cs = open(compressed_file + '.sha1sum', 'w')
                     cs.write(sha1)
                     cs.close()
 

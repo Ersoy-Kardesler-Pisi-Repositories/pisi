@@ -247,7 +247,8 @@ def dirName(filePath):
     return os.path.dirname(filePath)
 
 def system(command):
-    command = string.join(string.split(command))
+    # command = string.join(string.split(command))
+    command = " ".join(str.split(command))
     retValue = run_logged(command)
 
     #if return value is different than 0, it means error, raise exception

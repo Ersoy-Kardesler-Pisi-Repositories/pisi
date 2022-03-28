@@ -213,6 +213,7 @@ class Install(AtomicOperation):
         file_conflicts = []
         for f in self.files.list:
             pkg, existing_file = ctx.filesdb.get_file(f.path)
+            
             if pkg:
                 dst = pisi.util.join_path(ctx.config.dest_dir(), f.path)
                 if pkg != self.pkginfo.name and not os.path.isdir(dst) and really_conflicts(pkg):

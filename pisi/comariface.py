@@ -26,6 +26,9 @@ class Error(pisi.Error):
     pass
 
 try:
+    import sys
+    sys.path.append("/usr/lib/pisilinux3")
+    # import py3comar as comar
     import comar
     import dbus
 except ImportError:

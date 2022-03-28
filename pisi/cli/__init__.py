@@ -37,7 +37,7 @@ def printu(obj, err = False):
         out = sys.stderr
     else:
         out = sys.stdout
-    out.write(obj.encode('utf-8'))
+    out.write(obj)  # .encode('utf-8'))
     out.flush()
 
 class CLI(pisi.ui.UI):
@@ -53,8 +53,8 @@ class CLI(pisi.ui.UI):
 
     def output(self, msg, err = False, verbose = False):
         if (verbose and self.show_verbose) or (not verbose):
-            if type(msg)==type(str()):
-                msg = msg.encode('utf-8')
+            #if type(msg)==type(str()):
+                #msg = msg.encode('utf-8')
             if err:
                 out = sys.stderr
             else:
@@ -139,7 +139,7 @@ class CLI(pisi.ui.UI):
         msg = str(msg)
         prompt = msg + pisi.util.colorize(' (%s)' % "/".join(opts), 'red')
         while True:
-            s = eval(input(prompt.encode('utf-8')))
+            s = input(prompt)  # eval(input(prompt.encode('utf-8')))
             for opt in opts:
                 if opt.startswith(s):
                     return opt
@@ -159,7 +159,7 @@ class CLI(pisi.ui.UI):
         while True:
             tty.tcflush(sys.stdin.fileno(), 0)
             prompt = msg + pisi.util.colorize(_(' (yes/no)'), 'red')
-            s = eval(input(prompt.encode('utf-8')))
+            s = input(prompt)  # eval(input(prompt.encode('utf-8')))
 
             if yes_expr.search(s):
                 return True

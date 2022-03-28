@@ -43,7 +43,14 @@ class ItemByRepo:
         for r in self.item_repos(repo):
             if r in self.dbobj and item in self.dbobj[r]:
                 if self.compressed:
-                    return gzip.zlib.decompress(self.dbobj[r][item]), r
+                    try:
+                        # return gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1")), r
+                        return gzip.zlib.decompress(self.dbobj[r][item].encode("utf-8")), r
+                    except:
+                        # try:
+                        return gzip.zlib.decompress(self.dbobj[r][item]), r
+                        # except:
+                        #     return gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1")), r
                 else:
                     return self.dbobj[r][item], r
 
@@ -76,13 +83,20 @@ class ItemByRepo:
         return list(set(items))
 
     def get_items_iter(self, repo=None):
+        #print(self.item_repos(repo))
         for r in self.item_repos(repo):
+            r = r#.encode("utf-8").decode("latin-1") # pickle encoding değişkeni latin-1 kabulettiği için
             if not self.has_repo(r):
-                raise Exception(_('Repository %s does not exist.') % repo)
+                print(_('Repository %s does not exist.') % repo)
+                #raise Exception(_('Repository %s does not exist.') % repo)
 
             if self.compressed:
                 for item in list(self.dbobj[r].keys()):
-                    yield item, gzip.zlib.decompress(self.dbobj[r][item])
+                    try:
+                        # yield item, gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1"))
+                        yield item, gzip.zlib.decompress(self.dbobj[r][item].encode("utf-8"))
+                    except:
+                        yield item, gzip.zlib.decompress(self.dbobj[r][item])
             else:
                 for item in list(self.dbobj[r].keys()):
                     yield item, self.dbobj[r][item]

@@ -65,7 +65,15 @@ class PackageDB(lazydb.LazyDB):
         return [x.firstChild().data() for x in obsoletes.tags("Package")]
 
     def __generate_packages(self, doc):
-        return dict([(x.getTagData("Name"), gzip.zlib.compress(x.toString())) for x in doc.tags("Package")])
+        return dict([(x.getTagData("Name"), gzip.zlib.compress(x.toString().encode("utf-8"))) for x in doc.tags("Package")])
+        #_dict = {}
+        #for x in doc.tags("Package"):
+            #print(type(x.getTagData("Name")))
+            #print(dir(x))
+            #key = x.getTagData("Name")  # .encode("utf-8")
+            #print(type(key))
+            #_dict[key] = gzip.zlib.compress(x.toString().encode("utf-8"))
+        #return _dict
 
     def __generate_revdeps(self, doc):
         revdeps = {}
@@ -115,13 +123,14 @@ class PackageDB(lazydb.LazyDB):
         if not fields:
             fields = {'name': True, 'summary': True, 'desc': True}
         found = []
+
         for name, xml in self.pdb.get_items_iter(repo):
             if terms == [term for term in terms if (fields['name'] and \
                     re.compile(term, re.I).search(name)) or \
                     (fields['summary'] and \
-                    re.compile(resum % (lang, term), 0 if cs else re.I).search(xml)) or \
+                    re.compile(resum % (lang, term), 0 if cs else re.I).search(xml.decode("utf-8"))) or \
                     (fields['desc'] and \
-                    re.compile(redesc % (lang, term), 0 if cs else re.I).search(xml))]:
+                    re.compile(redesc % (lang, term), 0 if cs else re.I).search(xml.decode("utf-8")))]:
                 found.append(name)
         return found
 
@@ -201,6 +210,8 @@ class PackageDB(lazydb.LazyDB):
 
         for pkg_name in self.rpdb.get_list_item():
             xml = self.pdb.get_item(pkg_name, repo)
+            if isinstance(xml, bytes): xml = xml.decode("utf-8")
+
             package = piksemel.parseString(xml)
             replaces_tag = package.getTag("Replaces")
             if replaces_tag:
@@ -225,7 +236,17 @@ class PackageDB(lazydb.LazyDB):
             since_date = datetime.datetime(*time.strptime(historydb.get_last_repo_update(), "%Y-%m-%d")[0:6])
 
         for pkg in self.list_packages(repo):
-            enter_date = datetime.datetime(*time.strptime(self.get_package(pkg).history[-1].date, "%Y-%m-%d")[0:6])
+            try:
+                enter_date = datetime.datetime(*time.strptime(self.get_package(pkg).history[-1].date, "%Y-%m-%d")[0:6])
+            except:
+                try:
+                    enter_date = datetime.datetime(*time.strptime(self.get_package(pkg).history[-1].date, "%Y.%m.%d")[0:6])
+                except:
+                    try:
+                        enter_date = datetime.datetime(*time.strptime(self.get_package(pkg).history[-1].date, "%Y.%m.%d")[0:6])
+                    except:
+                        continue
+                        # enter_date = datetime.datetime(*time.strptime(self.get_package(pkg).history[-1].date, "%d-%m-%Y")[0:6])
             if enter_date >= since_date:
                 packages.append(pkg)
         return packages

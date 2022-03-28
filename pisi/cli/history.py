@@ -62,18 +62,18 @@ Lists previous operations.""")
 
     def print_history(self):
         for operation in self.historydb.get_last(ctx.get_option('last')):
-            print((_("Operation #%d: %s") % (operation.no, opttrans[operation.type])))
-            print((_("Date: %s %s") % (operation.date, operation.time)))
+            print(_("Operation #%d: %s") % (operation.no, opttrans[operation.type]))
+            print(_("Date: %s %s") % (operation.date, operation.time))
             print()
 
             if operation.type == "snapshot":
-                print((_("    * There are %d packages in this snapshot.") % len(operation.packages)))
+                print(_("    * There are %d packages in this snapshot.") % len(operation.packages))
             elif operation.type == "repoupdate":
                 for repo in operation.repos:
-                    print(("    *",  repo))
+                    print("    *",  repo)
             else:
                 for pkg in operation.packages:
-                    print(("    *",  pkg))
+                    print("    *",  pkg)
             print()
 
     def redirect_output(self, func):
@@ -95,6 +95,9 @@ Lists previous operations.""")
                     self.less.stdin.flush()
 
                 def write(self, s):
+                    if isinstance(s, str):
+                        s = s.encode("utf-8")
+
                     try:
                         self.less.stdin.write(s)
                     except IOError:

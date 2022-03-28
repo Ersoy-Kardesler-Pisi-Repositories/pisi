@@ -65,7 +65,6 @@ NB: We support only local files (e.g., /a/b/c) and http:// URIs at the moment
                     return
 
             pisi.api.add_repo(name, indexuri, ctx.get_option('at'))
-
             if not ctx.get_option('no_fetch'):
                 try:
                     pisi.api.update_repo(name)

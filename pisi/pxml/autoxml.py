@@ -50,7 +50,7 @@ mandatory, optional = list(range(2)) # poor man's enum
 
 # basic types
 
-String = bytes
+String = str  # bytes
 Text = str
 Integer = int
 Long = int
@@ -164,7 +164,8 @@ class Writer(formatter.DumbWriter):
         formatter.DumbWriter.__init__(self, file, maxcol)
 
     def send_literal_data(self, data):
-        self.file.write(data.encode("utf-8"))
+        print(data)
+        self.file.write(data) # .encode("utf-8"))
         i = data.rfind('\n')
         if i >= 0:
             self.col = 0
@@ -259,7 +260,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         #setattr(cls, 'xml_variables', [])
 
         # default class tag is class name
-        if 'tag' not in dir(dict):
+        if 'tag' not in dict:
             cls.tag = name
 
         # generate helper routines, for each XML component
@@ -337,7 +338,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         cls.__init__ = initialize
 
         cls.decoders = decoders
-        def decode(self, node, errs, where = builtins.str(cls.tag)):
+        def decode(self, node, errs, where = cls.tag):  # str(cls.tag)):
             for base in cls.autoxml_bases:
                 base.decode(self, node, errs, where)
             for decode_member in decoders:#self.__class__.decoders:
@@ -357,7 +358,7 @@ class autoxml(oo.autosuper, oo.autoprop):
         cls.encode = encode
 
         cls.errorss = errorss
-        def errors(self, where = builtins.str(name)):
+        def errors(self, where = name):  # str(name)):
             errs = []
             for base in cls.autoxml_bases:
                 errs.extend(base.errors(self, where))
@@ -699,7 +700,11 @@ class autoxml(oo.autosuper, oo.autoprop):
             if node:
                 try:
                     obj = make_object()
-                    obj.decode(node, errs, where)
+                    try:
+                        obj.decode(node, errs, where)
+                    except:
+                        pass
+                    
                     return obj
                 except Error:
                     errs.append(where + ': '+ _('Type mismatch: DOM cannot be decoded'))
@@ -725,7 +730,8 @@ class autoxml(oo.autosuper, oo.autoprop):
 
         def errors(obj, where):
             return obj.errors(where)
-
+            
+            
         def format(obj, f, errs):
             if obj:
                 try:
@@ -752,6 +758,7 @@ class autoxml(oo.autosuper, oo.autoprop):
 
         x = cls.gen_tag(comp_tag, [tag_type[0], mandatory])
         (init_item, decode_item, encode_item, errors_item, format_item) = x
+        
 
         def init():
             return []

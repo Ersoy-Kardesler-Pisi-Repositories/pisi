@@ -18,7 +18,8 @@ import pisi.util as util
 
 import string
 # lower borks for international locales. What we want is ascii lower.
-lower_map = string.maketrans(string.ascii_uppercase, string.ascii_lowercase)
+#lower_map = string.maketrans(string.ascii_uppercase, string.ascii_lowercase)
+lower_map = str.maketrans(string.ascii_uppercase, string.ascii_lowercase)
 
 class Singleton(object):
     _the_instances = {}
@@ -65,8 +66,9 @@ class LazyDB(Singleton):
                 f.write(LazyDB.cache_version)
                 f.flush()
                 os.fsync(f.fileno())
+
             pickle.dump(self._instance().__dict__,
-                         file(self.__cache_file(), 'wb'), 1)
+                         open(self.__cache_file(), 'wb'), 4) # 1: binary protocol
 
     def cache_valid(self):
         if not self.cachedir:
@@ -82,8 +84,17 @@ class LazyDB(Singleton):
 
     def cache_load(self):
         if os.path.exists(self.__cache_file()) and self.cache_valid():
+            
             try:
-                self._instance().__dict__ = pickle.load(file(self.__cache_file(), 'rb'))
+                # self._instance().__dict__ = pickle.load(open(self.__cache_file(), 'rb'), encoding="latin-1") # TODO: daha iyi bir encoding seçilmeli
+                try:
+                    self._instance().__dict__ = pickle.load(open(self.__cache_file(), 'rb'), encoding="utf-8")
+                except:
+                    self._instance().__dict__ = pickle.load(open(self.__cache_file(), 'rb'))
+                    # latin-1 ile okut sonra json ile çevir
+                    # a=pickle.load(open("/var/cache/pisi/packagedb.cache", "rb"), encoding="latin-1")
+                    # str(a).encode("utf-8")
+                    # okunan veri str ye çevrildikten sonra json ile sözlüğe çevir
                 return True
             except (pickle.UnpicklingError, EOFError):
                 if os.access(ctx.config.cache_root_dir(), os.W_OK):

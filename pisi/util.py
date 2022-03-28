@@ -485,7 +485,7 @@ def sha1_file(filename):
 def sha1_data(data):
     """Calculate sha1 hash of given data."""
     m = hashlib.sha1()
-    m.update(data)
+    m.update(data.encode("utf-8"))
     return m.hexdigest()
 
 def uncompress(patchFile, compressType="gz", targetDir=""):
@@ -610,7 +610,7 @@ def strip_file(filepath, fileinfo, outpath):
         if ret:
             ctx.ui.warning(_("objcopy (add-debuglink) command failed for file '%s'!") % f)
 
-    if fileinfo == None:        
+    if fileinfo == None:
         ret, out, err = run_batch("file %s" % filepath, ui_debug=False)
         if ret:
             ctx.ui.warning(_("file command failed with return code %s for file: %s") % (ret, filepath))

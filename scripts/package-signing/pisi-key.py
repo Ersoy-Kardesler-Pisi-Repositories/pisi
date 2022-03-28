@@ -28,6 +28,7 @@ ARCHIVE_KEYRING_URI = ''
 # MASTER_KEYRING = '/usr/share/keyrings/pardus-master-keyring.gpg'
 # ARCHIVE_KEYRING_URI = 'http://ftp.pardus.org.tr/pardus/pardus-archive-keyring.gpg'
 
+
 ARCHIVE_KEYRING='/usr/share/keyrings/pardus-archive-keyring.gpg'
 REMOVED_KEYS='/usr/share/keyrings/pardus-archive-removed-keys.gpg'
 

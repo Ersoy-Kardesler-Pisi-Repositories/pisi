@@ -13,7 +13,7 @@
 import sys
 import errno
 import traceback
-import exceptions
+#import exceptions
 import signal
 
 import pisi
@@ -38,7 +38,8 @@ def handle_exception(exception, value, tb):
     ui = pisi.cli.CLI() # make a temporary UI
     show_traceback = False
 
-    if exception == exceptions.KeyboardInterrupt:
+    #if exception == exceptions.KeyboardInterrupt:
+    if exception == KeyboardInterrupt:
         ui.error(_("Keyboard Interrupt: Exiting..."))
         exit()
     elif isinstance(value, pisi.Error):

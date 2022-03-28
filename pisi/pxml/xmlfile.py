@@ -53,6 +53,9 @@ class XmlFile(object):
 
     def parsexml(self, xml):
         """parses xml string and returns DOM"""
+        if isinstance(xml, bytes):
+            xml = xml.decode("utf-8")
+        
         try:
             self.doc = iks.parseString(xml)
             return self.doc

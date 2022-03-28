@@ -41,7 +41,8 @@ class Error(pisi.Error):
 
 __metaclass__ = autoxml.autoxml
 
-class Packager:
+# TODO: diğer sınıflara da metaclass ekle
+class Packager(metaclass=autoxml.autoxml):
 
     t_Name = [autoxml.Text, autoxml.mandatory]
     t_Email = [autoxml.String, autoxml.mandatory]
@@ -51,7 +52,7 @@ class Packager:
         return s
 
 
-class AdditionalFile:
+class AdditionalFile(metaclass=autoxml.autoxml):
 
     s_Filename = [autoxml.String, autoxml.mandatory]
     a_target = [autoxml.String, autoxml.mandatory]
@@ -65,12 +66,12 @@ class AdditionalFile:
             s += '(%s)' % self.permission
         return s
 
-class Type:
+class Type(metaclass=autoxml.autoxml):
 
     s_type = [autoxml.String, autoxml.mandatory]
     a_package = [autoxml.String, autoxml.optional]
 
-class Action:
+class Action(metaclass=autoxml.autoxml):
 
     # Valid actions:
     #
@@ -85,7 +86,7 @@ class Action:
     def __str__(self):
         return self.action
 
-class Patch:
+class Patch(metaclass=autoxml.autoxml):
 
     s_Filename = [autoxml.String, autoxml.mandatory]
     a_compressionType = [autoxml.String, autoxml.optional]
@@ -105,7 +106,7 @@ class Patch:
             s += ' level:' + self.level
         return s
 
-class Update:
+class Update(metaclass=autoxml.autoxml):
 
     a_release = [autoxml.String, autoxml.mandatory]
     # 'type' attribute is here to keep backward compatibility
@@ -126,7 +127,7 @@ class Update:
             s += ", type=" + self.type
         return s
 
-class Path:
+class Path(metaclass=autoxml.autoxml):
 
     s_Path = [autoxml.String, autoxml.mandatory]
     a_fileType =  [autoxml.String, autoxml.optional]
@@ -138,7 +139,7 @@ class Path:
         return s
 
 
-class ComarProvide:
+class ComarProvide(metaclass=autoxml.autoxml):
 
     s_om = [autoxml.String, autoxml.mandatory]
     a_script = [autoxml.String, autoxml.mandatory]
@@ -150,23 +151,21 @@ class ComarProvide:
         s += ' (' + self.om + '%s' % (' for %s' % self.name if self.name else '') + ')'
         return s
 
+class Archive(metaclass=autoxml.autoxml):
 
-class Archive:
-    s_uri = [autoxml.String, autoxml.mandatory]
-    a_type = [autoxml.String, autoxml.optional]
-    a_sha1sum = [autoxml.String, autoxml.mandatory]
-    a_target = [autoxml.String, autoxml.optional]
-    a_name = [autoxml.String, autoxml.optional]
+    s_uri = [ autoxml.String, autoxml.mandatory ]
+    a_type = [ autoxml.String, autoxml.optional ]
+    a_sha1sum =[ autoxml.String, autoxml.mandatory ]
+    a_target =[ autoxml.String, autoxml.optional ]
 
     def decode_hook(self, node, errs, where):
-        if not self.name:
-            self.name = os.path.basename(self.uri)
+        self.name = os.path.basename(self.uri)
 
     def __str__(self):
         s = _('URI: %s, type: %s, sha1sum: %s') % (self.uri, self.type, self.sha1sum)
         return s
 
-class Source:
+class Source(metaclass=autoxml.autoxml):
 
     t_Name = [autoxml.String, autoxml.mandatory]
     t_Homepage = [autoxml.String, autoxml.optional]
@@ -189,7 +188,7 @@ class Source:
     def buildtimeDependencies(self):
         return self.buildDependencies
 
-class AnyDependency:
+class AnyDependency(metaclass=autoxml.autoxml):
     t_Dependencies = [[pisi.dependency.Dependency], autoxml.optional, "Dependency"]
 
     def __str__(self):
@@ -225,7 +224,7 @@ class AnyDependency:
                 return True
         return False
 
-class Package:
+class Package(metaclass=autoxml.autoxml):
 
     t_Name = [ autoxml.String, autoxml.mandatory ]
     t_Summary = [ autoxml.LocalText, autoxml.optional ]

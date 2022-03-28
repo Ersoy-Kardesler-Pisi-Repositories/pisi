@@ -42,5 +42,5 @@ Lists currently tracked repositories.
                 ctx.ui.info(util.colorize(_("%s [%s]") % (repo, active), 'green'))
             else:
                 ctx.ui.info(util.colorize(_("%s [%s]") % (repo, active), 'red'))
-            print(('  ', self.repodb.get_repo_url(repo)))
+            print('  ', self.repodb.get_repo_url(repo))
 

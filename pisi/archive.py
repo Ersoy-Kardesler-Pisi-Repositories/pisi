@@ -19,6 +19,7 @@ import errno
 import shutil
 import tarfile
 import zipfile
+import lzma
 
 import gettext
 __trans = gettext.translation('pisi', fallback=True)
@@ -56,7 +57,7 @@ class _LZMAProxy(object):
             # Seeking here can cause problems with Python 2.7
             # if hasattr(self.fileobj, "seek"):
             #     self.fileobj.seek(0)
-            self.buf = ""
+            self.buf = b''
         else:
             self.lzmaobj = lzma.LZMACompressor()
 
@@ -71,10 +72,10 @@ class _LZMAProxy(object):
                 data = self.lzmaobj.decompress(raw)
             except EOFError:
                 break
+
             b.append(data)
             x += len(data)
-        self.buf = "".join(b)
-
+        self.buf = b"".join(b)
         buf = self.buf[:size]
         self.buf = self.buf[size:]
         self.pos += len(buf)
@@ -106,7 +107,7 @@ class TarFile(tarfile.TarFile):
                  name=None,
                  mode="r",
                  fileobj=None,
-                 compressformat="xz",
+                 compressformat=lzma.FORMAT_XZ,  # "xz", # nümerik olmalı
                  compresslevel=9,
                  **kwargs):
         """Open lzma/xz compressed tar archive name for reading or writing.
@@ -116,17 +117,21 @@ class TarFile(tarfile.TarFile):
         if len(mode) > 1 or mode not in "rw":
             raise ValueError("mode must be 'r' or 'w'.")
 
-        try:
-            import lzma
-        except ImportError:
-            raise tarfile.CompressionError("lzma module is not available")
+        # try:
+        #     import lzma
+        # except ImportError:
+        #     raise tarfile.CompressionError("lzma module is not available")
 
         if fileobj is not None:
             fileobj = _LZMAProxy(fileobj, mode)
         else:
-            options = {"format":    compressformat,
-                       "level":     compresslevel}
-            fileobj = lzma.LZMAFile(name, mode, options=options)
+            # options = {"format":    compressformat,
+            #            "level":     compresslevel}
+            # fileobj = lzma.LZMAFile(name, mode, options=options)
+            if mode == 'r':
+                fileobj = lzma.LZMAFile(filename=name, mode=mode, format=compressformat)
+            elif mode == "w":
+                fileobj = lzma.LZMAFile(filename=name, mode=mode, format=compressformat, preset=compresslevel)
 
         try:
             t = cls.taropen(name, mode, fileobj, **kwargs)
@@ -412,7 +417,7 @@ class ArchiveTar(ArchiveBase):
 
             except IOError as e:
                 # Handle the case where new path is file, but old path is directory
-                # due to not possible touch file c in /a/b if directory /a/b/c exists.  
+                # due to not possible touch file c in /a/b if directory /a/b/c exists.
                 if not e.errno == errno.EISDIR:
                     path = tarinfo.name
                     found = False
@@ -467,7 +472,8 @@ class ArchiveTar(ArchiveBase):
             elif self.type == 'tarbz2':
                 wmode = 'w:bz2'
             elif self.type in ('tarlzma', 'tarxz'):
-                format = "xz" if self.type == "tarxz" else "alone"
+                # format = "xz" if self.type == "tarxz" else "alone"
+                format = lzma.FORMAT_XZ if self.type == "tarxz" else lzma.FORMAT_ALONE
                 level = int(ctx.config.values.build.compressionlevel)
                 self.tar = TarFile.lzmaopen(self.file_path, "w",
                                             fileobj=self.fileobj,

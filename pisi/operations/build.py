@@ -129,12 +129,12 @@ def exclude_special_files(filepath, fileinfo, ag):
         # patches, PiSi removes wrong paths...
         if re.match(patterns["libtool"], fileinfo) and \
                 not os.path.islink(filepath):
-            ladata = file(filepath).read()
+            ladata = open(filepath).read()
             new_ladata = re.sub("-L%s/\S*" % ctx.config.tmp_dir(), "", ladata)
             new_ladata = re.sub("%s/\S*/install/" % ctx.config.tmp_dir(), "/",
                                 new_ladata)
             if new_ladata != ladata:
-                file(filepath, "w").write(new_ladata)
+                open(filepath, "w").write(new_ladata)
 
     for name, pattern in list(patterns.items()):
         if name in keeplist:
@@ -588,11 +588,11 @@ class Builder:
                 else:
                     abandoned_files.append(root)
 
-            if root in all_paths_in_packages: 
+            if root in all_paths_in_packages:
                 skip_paths.append(root)
                 continue
 
-            skip = False 
+            skip = False
             for skip_path in skip_paths:
                 if root.startswith(skip_path):
                     skip = True
@@ -733,7 +733,7 @@ class Builder:
                 valid_paths = [self.pkg_dir()]
                 conf_file = ctx.const.sandbox_conf
                 if os.path.exists(conf_file):
-                    for line in file(conf_file):
+                    for line in open(conf_file):
                         line = line.strip()
                         if len(line) > 0 and not line.startswith("#"):
                             if line.startswith("~"):
@@ -745,9 +745,11 @@ class Builder:
                     valid_paths.append(os.environ.get("CCACHE_DIR",
                                                       "/root/.ccache"))
 
+
                 ret = catbox.run(self.actionLocals[func],
                                  valid_paths,
                                  logger=self.log_sandbox_violation)
+
                 # Retcode can be 0 while there is a sanbox violation, so only
                 # look for violations to correctly handle it
                 if ret.violations != []:
