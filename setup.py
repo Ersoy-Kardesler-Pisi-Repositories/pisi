@@ -104,7 +104,7 @@ class Install(install):
                 continue
             lang = name[:-3]
             print(f"Installing '{lang}' translations...")
-            os.popen(f"msgfmt po/{lang}.po -o po/{lang}.mo")
+            os.system(f"msgfmt po/{lang}.po -o po/{lang}.mo")
             if not self.root:
                 self.root = "/"
             destpath = os.path.join(self.root, f"usr/share/locale/{lang}/LC_MESSAGES")
