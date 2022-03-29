@@ -48,7 +48,7 @@ class ItemByRepo:
                         return gzip.zlib.decompress(self.dbobj[r][item].encode("utf-8")), r
                     except:
                         # try:
-                        return gzip.zlib.decompress(self.dbobj[r][item]), r
+                        return gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1")), r
                         # except:
                         #     return gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1")), r
                 else:
@@ -96,7 +96,7 @@ class ItemByRepo:
                         # yield item, gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1"))
                         yield item, gzip.zlib.decompress(self.dbobj[r][item].encode("utf-8"))
                     except:
-                        yield item, gzip.zlib.decompress(self.dbobj[r][item])
+                        yield item, gzip.zlib.decompress(self.dbobj[r][item].encode("latin-1"))
             else:
                 for item in list(self.dbobj[r].keys()):
                     yield item, self.dbobj[r][item]
