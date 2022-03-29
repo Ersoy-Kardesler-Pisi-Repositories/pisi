@@ -136,7 +136,7 @@ Usage: info <package1> <package2> ... <packagen>
             ctx.ui.formatted_output(str(spec))
             if sourcedb:
                 revdeps =  [name for name, dep in sourcedb.get_rev_deps(spec.source.name)]
-                print((_('Reverse Build Dependencies:'), util.strlist(revdeps)))
+                print(_('Reverse Build Deps  :'), util.strlist(revdeps))
                 print()
 
     def pisifile_info(self, package):
