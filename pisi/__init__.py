@@ -19,7 +19,7 @@ import logging
 import logging.handlers
 import importlib
 
-__version__ = "2.7.1"
+__version__ = "3.0.0"
 
 __all__ = [ 'api', 'configfile', 'db']
 
